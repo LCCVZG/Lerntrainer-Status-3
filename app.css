@@ -359,3 +359,10 @@ button{touch-action:manipulation}
 .half .ans button.mc{min-height:56px}
 .half .ans button:active{transform:scale(.97);filter:brightness(1.15)}
 .mid{border-radius:0}
+/* --- iOS 26: Statusleisten-Unschärfe ("scroll edge effect") vermeiden ---
+   Kopfzeile scrollt mit (nicht sticky) und hält zusätzlichen Abstand zur Statusleiste,
+   damit Logo und Titel nie in der weichgezeichneten Zone liegen. */
+.top{position:relative;top:auto;padding-top:calc(env(safe-area-inset-top, 0px) + 22px);box-shadow:none}
+html{background:var(--navy)}
+body{background:var(--bg)}
+.pomo{position:fixed;top:calc(env(safe-area-inset-top, 0px) + 84px)}
