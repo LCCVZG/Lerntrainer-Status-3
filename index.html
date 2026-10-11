@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Status 3 · Notfallmedizin-Trainer</title>
+<meta name="description" content="Gamifizierter Fragentrainer Notfallmedizin: Lernen, Prüfung, Blitzrunde, Sichtungssprint, Boss-Einsätze und Duell NA vs. NotSan.">
+<meta name="theme-color" content="#0A1830">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Status 3">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="app.css">
+<script>try{var t=JSON.parse(localStorage.getItem('s3:v1')||'{}');var th=t.settings&&t.settings.theme;if(th&&th!=='auto')document.documentElement.setAttribute('data-theme',th);}catch(e){}</script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <svg class="logo" viewBox="0 0 512 512" aria-hidden="true"><defs><radialGradient id="lg" cx="50%" cy="42%" r="60%"><stop offset="0" stop-color="#1B3E78"/><stop offset="1" stop-color="#0A1830"/></radialGradient><linearGradient id="ld" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7CC4FF"/><stop offset="1" stop-color="#1F6FE0"/></linearGradient></defs><rect width="512" height="512" rx="112" fill="url(#lg)"/><g opacity=".55" fill="#5AB0FF"><path d="M256 250 L60 150 L60 210 Z"/><path d="M256 250 L452 150 L452 210 Z"/></g><path d="M156 340 V250 a100 100 0 0 1 200 0 V340 Z" fill="url(#ld)"/><text x="256" y="320" text-anchor="middle" font-family="system-ui,sans-serif" font-weight="900" font-size="150" fill="#fff">?</text><rect x="124" y="340" width="264" height="54" rx="14" fill="#E9EEF5"/></svg>
+    <div class="brand"><b>Status 3</b><small>NOTFALLMEDIZIN-TRAINER</small></div>
+    <span class="sp"></span>
+    <button class="pill idle" id="pomoPill" aria-label="Pomodoro-Timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9 2h6"/></svg><span id="pomoTime">25:00</span></button>
+    <span class="pill flame" id="streakPill" title="Serie"></span>
+    <span class="pill" id="xpPill" title="Erfahrungspunkte"></span>
+  </div>
+  <div class="wrap"><div class="lvlbar"><i id="lvlFill" style="width:0"></i></div></div>
+</header>
+
+<main><div class="wrap" id="view"></div></main>
+
+<nav class="nav" aria-label="Hauptnavigation"><div class="in" id="nav"></div></nav>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="box" id="sheetBox"></div></div>
+<div class="zoomer" id="zoomer"><div class="bar2"><b>Vergrößerung – horizontal scrollen</b><button class="btn sm" id="zoomClose">Schließen</button></div><div class="sc"><div id="zoomFig"></div></div></div>
+<div class="duel" id="duel"></div>
+<div class="lvlup" id="lvlup"><div class="box" id="lvlupBox"></div></div>
+<div class="pomo hidden" id="pomoPop"></div>
+<div class="toast" id="toast"></div>
+<canvas id="fx"></canvas>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
