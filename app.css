@@ -345,3 +345,17 @@ label.fld input,label.fld select{min-width:0;width:100%}
 .figsc svg.ecg12{min-width:720px}
 .fig .zoom{border:0;cursor:zoom-in}
 .zoomer .sc > div{min-width:1500px}
+/* --- iPhone safe areas (Dynamic Island / Home-Indikator) --- */
+.top{padding-top:calc(env(safe-area-inset-top, 0px) + 12px)}
+button{touch-action:manipulation}
+.duel{height:100dvh;padding:calc(env(safe-area-inset-top, 0px) + 26px) env(safe-area-inset-right, 0px) calc(env(safe-area-inset-bottom, 0px) + 22px) env(safe-area-inset-left, 0px);
+  touch-action:manipulation;-webkit-touch-callout:none;overscroll-behavior:none}
+.half{padding:12px 16px 14px;min-height:0}
+.half.p2{border-radius:18px 18px 0 0}
+.half.p1{border-radius:0 0 18px 18px}
+.half .q{min-height:0}
+.half .ans{gap:10px}
+.half .ans button{min-height:66px;font-size:17px}
+.half .ans button.mc{min-height:56px}
+.half .ans button:active{transform:scale(.97);filter:brightness(1.15)}
+.mid{border-radius:0}

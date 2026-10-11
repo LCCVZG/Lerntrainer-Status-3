@@ -956,8 +956,8 @@ function startDuel(C) {
     setN(`${p ? (ok ? '✓ ' + esc(names[p - 1]) + ' richtig' : '✗ ' + esc(names[p - 1]) + ' falsch – Punkt für ' + esc(names[(p === 1 ? 2 : 1) - 1])) : '⏱ Zeit abgelaufen'} · Lösung: <b>${esc(r.sol)}</b>`);
     later(next, 2600);
   };
-  D2.onclick = e => {
-    const b = e.target.closest('.ans button'); if (!b || lock || b.disabled) return; lock = true; SND.buzz(); buzzV(30);
+  D2.onpointerdown = e => {
+    const b = e.target.closest('.ans button:not([data-x])'); if (!b || lock || b.disabled) return; e.preventDefault(); lock = true; SND.buzz(); buzzV(30);
     const p = b.closest('#h1') ? 1 : 2; const r = rounds[ri]; const v = +b.dataset.v;
     const ok = r.kind === 'tf' ? (v === 1) === r.v : r.ch[v].ok; ok ? SND.ok() : SND.bad(); reveal(p, ok);
   };
