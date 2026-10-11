@@ -528,7 +528,7 @@ function greet() { const h = new Date().getHours(); return h < 5 ? 'Ruhige Nacht
 function filterChips(sel, all, attr, label = x => x) { return `<div class="chips">${all.map(k => `<button class="chip" data-${attr}="${k}" aria-pressed="${sel.includes(k)}">${esc(label(k))}</button>`).join('')}</div>`; }
 function learnPool() {
   const L = S.settings.learn;
-  return QN.filter(q => (!L.topics.length || L.topics.includes(q.topic)) && (!L.types.length || L.types.includes(q.t)) &&
+  return QN.filter(q => (!L.topics.length || L.topics.includes(q.topic)) && (!L.types.length || L.types.includes(q.t)) && q.lvl >= (L.lvl || 1) &&
     (L.status === 'all' || (L.status === 'new' && !S.prog[q.id]) || (L.status === 'wrong' && S.prog[q.id] && S.prog[q.id].ls < .999)));
 }
 let lastSeq = -1, recent = [];
@@ -548,6 +548,7 @@ VIEWS.learn = () => {
   <details class="flt" id="flt"><summary>${I('<path d="M3 5h18M6 12h12M10 19h4"/>', 'width="18" height="18"')} Filter <span class="muted small" id="fltInfo"></span></summary><div class="in">
     <div><div class="eyebrow" style="margin-bottom:6px">Themen</div>${filterChips(L.topics, Object.keys(D.topics), 'tp', k => D.topics[k])}</div>
     <div><div class="eyebrow" style="margin-bottom:6px">Fragentypen</div>${filterChips(L.types, ['mtf', 'order', 'match', 'cloze', 'num', 'img'], 'ty', k => TYPE[k])}</div>
+    <div><div class="eyebrow" style="margin-bottom:6px">Schwierigkeit</div><div class="chips">${[[1, 'Alle'], [2, 'ab ●●'], [3, 'nur ●●● (EDAIC-B-Niveau)']].map(([k, l]) => `<button class="chip" data-lv="${k}" aria-pressed="${(L.lvl || 1) === k}">${l}</button>`).join('')}</div></div>
     <div><div class="eyebrow" style="margin-bottom:6px">Auswahl</div><div class="chips">${[['all', 'Alle'], ['new', 'Offene'], ['wrong', 'Falsche']].map(([k, l]) => `<button class="chip" data-st="${k}" aria-pressed="${L.status === k}">${l}</button>`).join('')}</div></div>
     <div><div class="eyebrow" style="margin-bottom:6px">Reihenfolge</div><div class="chips">${[['smart', 'Schlau'], ['random', 'Zufällig'], ['seq', 'Nummer']].map(([k, l]) => `<button class="chip" data-or="${k}" aria-pressed="${S.settings.order === k}">${l}</button>`).join('')}</div><div class="small muted" style="margin-top:6px">„Schlau“ bevorzugt neue, falsche und lange nicht gesehene Fragen.</div></div>
   </div></details>
@@ -559,6 +560,7 @@ VIEWS.learn = () => {
     if (b.dataset.tp) { const a = L.topics, k = b.dataset.tp; a.includes(k) ? a.splice(a.indexOf(k), 1) : a.push(k); }
     if (b.dataset.ty) { const a = L.types, k = b.dataset.ty; a.includes(k) ? a.splice(a.indexOf(k), 1) : a.push(k); }
     if (b.dataset.st) L.status = b.dataset.st;
+    if (b.dataset.lv) L.lvl = +b.dataset.lv;
     if (b.dataset.or) S.settings.order = b.dataset.or;
     save(); const open = $('#flt').open; VIEWS.learn(); $('#flt').open = open;
   });
@@ -626,14 +628,14 @@ VIEWS.exam = () => {
   if (exam && !exam.done) return drawExam();
   view.innerHTML = `<h2 style="margin-bottom:12px">Prüfungssimulation</h2><div class="card">
    <p>Zufällige Fragen aus allen Themen, <b>ohne Feedback</b> bis zur Abgabe, mit Zeitlimit. Abgabe jederzeit möglich.</p>
-   <div class="grid2"><button class="btn pri" data-ex="20">20 Fragen · 20 min</button><button class="btn pri" data-ex="40">40 Fragen · 40 min</button></div>
+   <div class="grid2"><button class="btn pri" data-ex="20">20 Fragen · 20 min</button><button class="btn pri" data-ex="40">40 Fragen · 40 min</button></div><button class="btn red block" style="margin-top:10px" data-ex="20" data-hard="1">Schwer: 20 Fragen ●●● · 25 min</button>
    ${S.exams.length ? `<hr><div class="eyebrow" style="margin-bottom:6px">Letzte Ergebnisse</div>${S.exams.slice(-5).reverse().map(e => `<div class="between small" style="padding:4px 0"><span>${new Date(e.date).toLocaleDateString('de-DE')} · ${e.n} Fragen</span><b style="color:${e.pct >= 70 ? 'var(--ok)' : 'var(--bad)'}">${e.pct} %</b></div>`).join('')}` : ''}</div>`;
   view.onclick = e => {
     const b = e.target.closest('[data-ex]'); if (!b) return; view.onclick = null;
-    const n = +b.dataset.ex; const byT = {}; QN.forEach(q => (byT[q.topic] = byT[q.topic] || []).push(q));
+    const n = +b.dataset.ex, hard = !!b.dataset.hard; const byT = {}; QN.filter(q => !hard || q.lvl >= 3).forEach(q => (byT[q.topic] = byT[q.topic] || []).push(q));
     const qs = []; const ts = Object.keys(byT); let k = 0; const pools = Object.fromEntries(ts.map(t => [t, shuffle(byT[t])]));
-    while (qs.length < n) { const t = ts[k++ % ts.length]; if (pools[t].length) qs.push(pools[t].pop()); }
-    exam = { qs: shuffle(qs).map(q => q.id), st: {}, i: 0, end: Date.now() + n * 60000, done: false };
+    while (qs.length < n && ts.some(t => pools[t].length)) { const t = ts[k++ % ts.length]; if (pools[t].length) qs.push(pools[t].pop()); }
+    exam = { qs: shuffle(qs).map(q => q.id), st: {}, i: 0, end: Date.now() + (hard ? 25 : n) * 60000, done: false, hard };
     drawExam();
   };
 };
